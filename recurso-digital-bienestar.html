@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Un día, tu mente — Recurso de bienestar para 5to semestre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#161B2E;
+    --ink-soft:#252C49;
+    --paper:#F2EEE4;
+    --paper-dim:#E6E1D3;
+    --lavender:#8A93D1;
+    --amber:#C97B3D;
+    --sage:#7C9473;
+    --line: rgba(22,27,46,0.14);
+    --line-dark: rgba(242,238,228,0.16);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter', sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.6;
+    overflow-x:hidden;
+    transition: background 1.1s ease, color 1.1s ease;
+  }
+  body.is-dark{ background:var(--ink); color:var(--paper); }
+
+  h1,h2,h3,.display{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    letter-spacing:-0.01em;
+  }
+  .mono{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    font-size:0.72rem;
+  }
+
+  /* ---- time rail ---- */
+  #time-rail{
+    position:fixed; top:0; left:0; right:0; height:44px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 20px; z-index:100;
+    background:rgba(22,27,46,0.9);
+    color:var(--paper);
+    backdrop-filter: blur(6px);
+  }
+  #time-rail .clock{ color:var(--lavender); }
+  #time-rail nav{ display:flex; gap:18px; }
+  #time-rail nav a{
+    color:rgba(242,238,228,0.6);
+    text-decoration:none;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    transition:color .3s;
+  }
+  #time-rail nav a:hover, #time-rail nav a.active{ color:var(--paper); }
+  #time-rail nav a.active{ color:var(--amber); }
+
+  section{
+    min-height:100vh;
+    padding:120px 8vw 90px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    position:relative;
+    border-bottom:1px solid var(--line);
+  }
+  body.is-dark section{ border-bottom:1px solid var(--line-dark); }
+
+  .eyebrow{
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:22px; opacity:0.65;
+  }
+  .eyebrow .dot{ width:7px; height:7px; border-radius:50%; background:currentColor; }
+
+  .wrap{ max-width:760px; }
+  .wrap-wide{ max-width:920px; }
+
+  /* ---- HERO ---- */
+  #hero{
+    background: linear-gradient(160deg, #EFE9DA 0%, var(--paper) 55%, #E3DDCB 100%);
+    justify-content:center;
+  }
+  #hero h1{
+    font-size:clamp(2.4rem, 6vw, 4.6rem);
+    line-height:1.05;
+    max-width:11.5em;
+  }
+  #hero h1 em{ font-style:italic; color:var(--amber); }
+  #hero p.lede{
+    margin-top:26px; max-width:560px; font-size:1.08rem; opacity:0.82;
+  }
+  .meta-line{
+    margin-top:44px; display:flex; gap:28px; flex-wrap:wrap;
+  }
+  .meta-line div{ font-family:'IBM Plex Mono', monospace; font-size:0.72rem; opacity:0.6; text-transform:uppercase; letter-spacing:0.04em;}
+  .meta-line strong{ display:block; font-family:'Inter'; font-size:0.95rem; font-weight:600; text-transform:none; letter-spacing:0; opacity:1; margin-top:3px;}
+  .scroll-cue{
+    position:absolute; bottom:36px; left:8vw;
+    font-family:'IBM Plex Mono'; font-size:0.7rem; text-transform:uppercase; letter-spacing:0.08em; opacity:0.5;
+  }
+
+  h2.section-title{
+    font-size:clamp(1.9rem, 3.6vw, 2.9rem);
+    margin-bottom:20px;
+    max-width:9em;
+  }
+  p.section-lede{ max-width:620px; font-size:1.02rem; opacity:0.85; margin-bottom:36px;}
+
+  /* ---- pillar cards (distrés) ---- */
+  .pillars{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:8px;}
+  .pillar{
+    border:1px solid var(--line); border-radius:2px; padding:24px 20px;
+    background:rgba(255,255,255,0.35);
+  }
+  .pillar h3{ font-size:1.1rem; margin-bottom:10px; color:var(--amber);}
+  .pillar p{ font-size:0.92rem; opacity:0.82;}
+
+  /* ---- breathing tool ---- */
+  #breathing-tool{
+    display:flex; align-items:center; gap:60px; flex-wrap:wrap;
+    margin-top:20px;
+  }
+  .breath-circle-holder{
+    width:220px; height:220px; display:flex; align-items:center; justify-content:center; position:relative; flex-shrink:0;
+  }
+  .breath-ring{
+    position:absolute; inset:0; border-radius:50%;
+    border:1px solid var(--line-dark);
+  }
+  .breath-circle{
+    width:90px; height:90px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--lavender), #5C64A0);
+    display:flex; align-items:center; justify-content:center;
+    transition: transform 4s ease-in-out;
+    box-shadow: 0 0 40px rgba(138,147,209,0.35);
+  }
+  .breath-circle span{ font-family:'IBM Plex Mono'; font-size:0.68rem; text-transform:uppercase; color:var(--paper); text-align:center; padding:0 10px;}
+  .breath-panel{ max-width:360px; }
+  .breath-panel p{ opacity:0.8; font-size:0.95rem; margin-bottom:20px; }
+  button.btn{
+    font-family:'IBM Plex Mono', monospace; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em;
+    background:var(--lavender); color:#161B2E; border:none; padding:12px 22px; cursor:pointer; border-radius:2px;
+    transition: opacity .2s;
+  }
+  button.btn:hover{ opacity:0.85; }
+  button.btn.ghost{ background:transparent; border:1px solid var(--line-dark); color:inherit; }
+
+  /* ---- grounding steps ---- */
+  .steps{ margin-top:36px; display:flex; flex-direction:column; gap:0; max-width:640px;}
+  .step{
+    display:grid; grid-template-columns:56px 1fr; gap:18px; padding:18px 0; border-top:1px solid var(--line-dark);
+  }
+  .step:last-child{ border-bottom:1px solid var(--line-dark); }
+  .step .num{ font-family:'IBM Plex Mono'; font-size:0.85rem; opacity:0.5; }
+  .step h4{ font-family:'Inter'; font-weight:600; font-size:0.98rem; margin-bottom:4px;}
+  .step p{ font-size:0.9rem; opacity:0.75; }
+
+  /* ---- self care grid ---- */
+  .care-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:10px; }
+  .care-card{ border:1px solid var(--line); padding:22px; border-radius:2px; }
+  .care-card h4{ font-size:1rem; margin-bottom:8px; }
+  .care-card p{ font-size:0.9rem; opacity:0.8; }
+
+  /* ---- sleep checklist ---- */
+  #sleep-tool{ margin-top:10px; max-width:640px; }
+  .progress-line{
+    height:3px; background:var(--line-dark); border-radius:2px; overflow:hidden; margin-bottom:26px;
+  }
+  .progress-fill{ height:100%; width:0%; background:var(--amber); transition:width .4s ease; }
+  .check-item{
+    display:flex; align-items:flex-start; gap:14px; padding:14px 0; border-top:1px solid var(--line-dark); cursor:pointer;
+  }
+  .check-item:last-child{ border-bottom:1px solid var(--line-dark); }
+  .box{
+    width:20px; height:20px; border:1px solid var(--line-dark); border-radius:3px; flex-shrink:0; margin-top:2px;
+    display:flex; align-items:center; justify-content:center; transition: background .2s, border-color .2s;
+  }
+  .box.checked{ background:var(--sage); border-color:var(--sage); }
+  .box.checked::after{ content:"✓"; font-size:0.7rem; color:#161B2E; }
+  .check-item .label strong{ display:block; font-size:0.95rem; }
+  .check-item .label span{ font-size:0.85rem; opacity:0.7; }
+  .check-item.done .label strong{ opacity:0.5; text-decoration:line-through; }
+  #sleep-msg{ margin-top:22px; font-size:0.92rem; opacity:0.85; min-height:1.4em; }
+
+  /* ---- reflection tool ---- */
+  .reflect-q{ margin-bottom:28px; }
+  .reflect-q p.q{ font-weight:600; margin-bottom:12px; font-size:0.98rem; }
+  .opts{ display:flex; gap:10px; flex-wrap:wrap; }
+  .opt{
+    font-family:'IBM Plex Mono'; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.03em;
+    padding:9px 16px; border:1px solid var(--line-dark); border-radius:20px; cursor:pointer; background:transparent; color:inherit;
+    transition: background .2s, border-color .2s;
+  }
+  .opt.sel{ background:var(--amber); border-color:var(--amber); color:#161B2E; }
+  #reflect-result{
+    margin-top:10px; padding:20px; border-left:2px solid var(--sage); font-size:0.94rem; opacity:0; transition:opacity .4s; max-width:560px;
+  }
+  #reflect-result.show{ opacity:1; }
+
+  /* ---- closing / help ---- */
+  #ayuda{ align-items:flex-start; }
+  .help-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:10px; }
+  .help-card{ border:1px solid var(--line-dark); padding:24px; }
+  .help-card h4{ color:var(--lavender); margin-bottom:8px; font-size:1rem; }
+  .help-card p{ font-size:0.9rem; opacity:0.8; }
+  .disclaimer{ margin-top:40px; font-size:0.82rem; opacity:0.55; max-width:600px; }
+
+  footer{
+    padding:50px 8vw; background:#10142280; border-top:1px solid var(--line-dark);
+    font-family:'IBM Plex Mono'; font-size:0.72rem; opacity:0.7; display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px;
+  }
+
+  @media (max-width:720px){
+    .pillars{ grid-template-columns:1fr; }
+    .care-grid{ grid-template-columns:1fr; }
+    .help-grid{ grid-template-columns:1fr; }
+    #breathing-tool{ gap:30px; }
+    #time-rail nav{ display:none; }
+    section{ padding:110px 6vw 70px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="time-rail">
+  <div class="clock mono" id="clock-label">07:00 · empieza el día</div>
+  <nav>
+    <a href="#distres" data-sec="distres">Distrés</a>
+    <a href="#irritabilidad" data-sec="irritabilidad">Irritabilidad</a>
+    <a href="#autocuidado" data-sec="autocuidado">Autocuidado</a>
+    <a href="#sueno" data-sec="sueno">Sueño</a>
+    <a href="#ayuda" data-sec="ayuda">Ayuda</a>
+  </nav>
+</div>
+
+<!-- HERO -->
+<section id="hero" data-time="07:00 · empieza el día" data-theme="light">
+  <div class="eyebrow mono">Recurso digital · Bienestar en 5to semestre</div>
+  <h1>Un día en tu carrera<br>tiene <em>picos</em> que puedes<br>aprender a leer.</h1>
+  <p class="lede">Entre clases, exposiciones y turnos de práctica, el cuerpo acumula señales: tensión durante el día, irritabilidad al final de la tarde, y una noche que no descansa lo suficiente. Este recorrido sigue esas horas y te deja una herramienta concreta en cada una.</p>
+  <div class="meta-line">
+    <div>Dirigido a<strong>Quinto semestre · Psicología Clínica</strong></div>
+    <div>Basado en<strong>Estrategias de manejo del estrés, sueño y regulación emocional</strong></div>
+    <div>Duración<strong>6–8 min de lectura + ejercicios</strong></div>
+  </div>
+  <div class="scroll-cue">Desplázate para avanzar en el día ↓</div>
+</section>
+
+<!-- DISTRÉS -->
+<section id="distres" data-time="10:00 · media mañana" data-theme="light">
+  <div class="eyebrow mono"><span class="dot"></span>10:00 — entre clase y clase</div>
+  <h2 class="section-title">Cuando las exigencias superan tu capacidad de respuesta</h2>
+  <p class="section-lede">El distrés no es "estrés normal": aparece cuando las tareas, evaluaciones y prácticas se acumulan más rápido de lo que puedes procesarlas. No es falta de disciplina — es una señal de que el sistema necesita ajustes.</p>
+  <div class="pillars">
+    <div class="pillar">
+      <h3>Cómo se siente</h3>
+      <p>Tensión sostenida, dificultad para concentrarte, sensación de estar "siempre atrasado" aunque trabajes constantemente.</p>
+    </div>
+    <div class="pillar">
+      <h3>Por qué ocurre en 5to semestre</h3>
+      <p>Convergen prácticas, trabajos grupales y evaluaciones teóricas en simultáneo, con poco margen de recuperación entre unas y otras.</p>
+    </div>
+    <div class="pillar">
+      <h3>Qué lo mantiene</h3>
+      <p>Postergar tareas pequeñas, dormir mal y no marcar límites entre el tiempo académico y el de descanso alimentan el ciclo.</p>
+    </div>
+  </div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="num">01</div>
+      <div><h4>Nombra la carga antes de resolverla</h4><p>Escribe en una lista todo lo pendiente de la semana, sin ordenar por importancia todavía. Sacarlo de la cabeza reduce la sensación de sobrecarga.</p></div>
+    </div>
+    <div class="step">
+      <div class="num">02</div>
+      <div><h4>Divide en bloques de 25–40 minutos</h4><p>Trabajar en bloques con pausas breves (técnica pomodoro) evita el desgaste de sesiones largas sin cortes.</p></div>
+    </div>
+    <div class="step">
+      <div class="num">03</div>
+      <div><h4>Reserva un cierre del día</h4><p>Un horario fijo para "dejar de trabajar" — aunque no todo esté terminado — le enseña a tu sistema nervioso que puede bajar la guardia.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- IRRITABILIDAD -->
+<section id="irritabilidad" data-time="14:00 · después del almuerzo" data-theme="light">
+  <div class="eyebrow mono"><span class="dot"></span>14:00 — cuando la paciencia se agota</div>
+  <h2 class="section-title">La irritabilidad casi nunca es sobre lo último que pasó</h2>
+  <p class="section-lede">Suele ser la suma de varias horas de tensión sin descarga. Reconocerla a tiempo evita reacciones que después generan culpa o conflictos con compañeros, docentes o familia.</p>
+
+  <div id="breathing-tool">
+    <div class="breath-circle-holder">
+      <div class="breath-ring"></div>
+      <div class="breath-circle" id="breathCircle"><span id="breathLabel">Toca iniciar</span></div>
+    </div>
+    <div class="breath-panel">
+      <h3 style="font-size:1.05rem; margin-bottom:10px;">Respiración 4–7–8</h3>
+      <p>Una técnica breve de regulación del sistema nervioso: inhala 4 segundos, sostén 7, exhala 8. Tres a cuatro ciclos suelen bastar para bajar la activación antes de responder a algo que te tensionó.</p>
+      <button class="btn" id="breathBtn">Iniciar ejercicio</button>
+    </div>
+  </div>
+</section>
+
+<!-- AUTOCUIDADO -->
+<section id="autocuidado" data-time="20:00 · después de clases" data-theme="dark">
+  <div class="eyebrow mono"><span class="dot"></span>20:00 — el margen que sí te pertenece</div>
+  <h2 class="section-title">Autocuidado no es una recompensa, es mantenimiento</h2>
+  <p class="section-lede">No requiere horas libres que no tienes. Son decisiones pequeñas y sostenibles que evitan que el desgaste se acumule semana tras semana.</p>
+  <div class="care-grid">
+    <div class="care-card"><h4>Movimiento breve</h4><p>10–15 minutos de caminata o estiramiento entre tareas reduce la tensión muscular acumulada por estar sentado estudiando.</p></div>
+    <div class="care-card"><h4>Contacto social real</h4><p>Un mensaje de voz o una llamada corta a alguien de confianza corta el aislamiento que suele acompañar a las semanas de mucha carga.</p></div>
+    <div class="care-card"><h4>Límite con el celular</h4><p>Definir una hora para dejar de revisar grupos académicos protege el tiempo que necesitas para desconectar antes de dormir.</p></div>
+    <div class="care-card"><h4>Una tarea, no todas</h4><p>Elegir una sola prioridad para el resto del día, en vez de intentar avanzar en todo, reduce la sensación de estar fallando constantemente.</p></div>
+  </div>
+</section>
+
+<!-- REFLEXIÓN -->
+<section id="reflexion" data-time="22:00 · antes de cerrar el día" data-theme="dark">
+  <div class="eyebrow mono"><span class="dot"></span>22:00 — una pausa para revisarte</div>
+  <h2 class="section-title">Un chequeo rápido, no un diagnóstico</h2>
+  <p class="section-lede">Responde con honestidad. Esto es solo un espacio de reflexión personal — no reemplaza una evaluación profesional.</p>
+
+  <div class="reflect-q" data-q="1">
+    <p class="q">¿Con qué frecuencia sientes que el día no te alcanza para lo que tenías planeado?</p>
+    <div class="opts">
+      <button class="opt" data-v="0">Casi nunca</button>
+      <button class="opt" data-v="1">A veces</button>
+      <button class="opt" data-v="2">Frecuentemente</button>
+    </div>
+  </div>
+  <div class="reflect-q" data-q="2">
+    <p class="q">¿Con qué frecuencia te cuesta conciliar el sueño pensando en pendientes académicos?</p>
+    <div class="opts">
+      <button class="opt" data-v="0">Casi nunca</button>
+      <button class="opt" data-v="1">A veces</button>
+      <button class="opt" data-v="2">Frecuentemente</button>
+    </div>
+  </div>
+  <div class="reflect-q" data-q="3">
+    <p class="q">¿Con qué frecuencia reaccionas con más molestia de la que la situación ameritaba?</p>
+    <div class="opts">
+      <button class="opt" data-v="0">Casi nunca</button>
+      <button class="opt" data-v="1">A veces</button>
+      <button class="opt" data-v="2">Frecuentemente</button>
+    </div>
+  </div>
+
+  <div id="reflect-result"></div>
+</section>
+
+<!-- SUEÑO -->
+<section id="sueno" data-time="23:30 · antes de dormir" data-theme="dark">
+  <div class="eyebrow mono"><span class="dot"></span>23:30 — donde se cobra todo lo del día</div>
+  <h2 class="section-title">La calidad del sueño se construye antes de acostarte</h2>
+  <p class="section-lede">Marca lo que ya haces bien y lo que podrías ajustar esta semana. No se trata de cumplir todo desde hoy, sino de elegir uno o dos cambios sostenibles.</p>
+
+  <div id="sleep-tool">
+    <div class="progress-line"><div class="progress-fill" id="sleepProgress"></div></div>
+
+    <div class="check-item" data-item="1">
+      <div class="box"></div>
+      <div class="label"><strong>Horario fijo para dormir y despertar</strong><span>Incluso los fines de semana, con una diferencia menor a 1 hora.</span></div>
+    </div>
+    <div class="check-item" data-item="2">
+      <div class="box"></div>
+      <div class="label"><strong>Pantallas fuera 30 minutos antes</strong><span>La luz de las pantallas retrasa la liberación natural de melatonina.</span></div>
+    </div>
+    <div class="check-item" data-item="3">
+      <div class="box"></div>
+      <div class="label"><strong>Sin cafeína después de media tarde</strong><span>La cafeína puede seguir activa en el cuerpo 6 horas o más.</span></div>
+    </div>
+    <div class="check-item" data-item="4">
+      <div class="box"></div>
+      <div class="label"><strong>La cama es solo para dormir</strong><span>Estudiar en la cama asocia ese espacio con actividad mental, no con descanso.</span></div>
+    </div>
+    <div class="check-item" data-item="5">
+      <div class="box"></div>
+      <div class="label"><strong>Anotas pendientes antes de acostarte</strong><span>Pasar la lista mental a un papel reduce las vueltas nocturnas por temas pendientes.</span></div>
+    </div>
+
+    <p id="sleep-msg" class="mono"></p>
+  </div>
+</section>
+
+<!-- AYUDA -->
+<section id="ayuda" data-time="00:00 · si necesitas más apoyo" data-theme="dark">
+  <div class="eyebrow mono"><span class="dot"></span>00:00 — cuando esto no es suficiente</div>
+  <h2 class="section-title">Buscar apoyo profesional también es una estrategia</h2>
+  <p class="section-lede">Si el distrés, la irritabilidad o el insomnio se mantienen varias semanas seguidas y afectan tu día a día, no tienes que manejarlo solo o sola.</p>
+  <div class="help-grid">
+    <div class="help-card">
+      <h4>Dentro de la universidad</h4>
+      <p>Acude al servicio de Bienestar Estudiantil o al departamento de consejería psicológica de tu campus para una orientación confidencial.</p>
+    </div>
+    <div class="help-card">
+      <h4>Con tus docentes</h4>
+      <p>Conversar con un docente o tutor sobre plazos y carga puede abrir opciones que no ves cuando estás dentro del agobio.</p>
+    </div>
+    <div class="help-card">
+      <h4>Con tu red cercana</h4>
+      <p>Compañeros, familia o amistades de confianza pueden sostenerte mientras organizas los siguientes pasos.</p>
+    </div>
+    <div class="help-card">
+      <h4>Con un profesional de salud mental</h4>
+      <p>Un proceso terapéutico breve puede darte herramientas específicas para tu situación, más allá de este recurso general.</p>
+    </div>
+  </div>
+  <p class="disclaimer">Este recurso tiene fines psicoeducativos y de promoción de la salud mental. No constituye un diagnóstico ni sustituye la evaluación de un profesional de la salud mental.</p>
+</section>
+
+<footer>
+  <div>TICS para la Psicología Clínica · Universidad Politécnica Salesiana</div>
+  <div>Clemente · Amaguaya · Torres · Vanegas — Prototipo funcional, Fase 3</div>
+</footer>
+
+<script>
+  // ---- clock / active nav via IntersectionObserver ----
+  const clockLabel = document.getElementById('clock-label');
+  const navLinks = document.querySelectorAll('#time-rail nav a');
+  const sections = document.querySelectorAll('section[data-time]');
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const t = entry.target.getAttribute('data-time');
+        const theme = entry.target.getAttribute('data-theme');
+        clockLabel.textContent = t;
+        document.body.classList.toggle('is-dark', theme === 'dark');
+        navLinks.forEach(a=>a.classList.remove('active'));
+        const match = document.querySelector(`#time-rail nav a[href="#${entry.target.id}"]`);
+        if(match) match.classList.add('active');
+      }
+    });
+  }, {threshold:0.5});
+  sections.forEach(s=>io.observe(s));
+
+  // ---- breathing tool ----
+  const breathBtn = document.getElementById('breathBtn');
+  const breathCircle = document.getElementById('breathCircle');
+  const breathLabel = document.getElementById('breathLabel');
+  let breathing = false;
+  let breathTimer = null;
+
+  function runCycle(){
+    if(!breathing) return;
+    breathLabel.textContent = 'Inhala';
+    breathCircle.style.transform = 'scale(1.9)';
+    breathTimer = setTimeout(()=>{
+      if(!breathing) return;
+      breathLabel.textContent = 'Sostén';
+      breathTimer = setTimeout(()=>{
+        if(!breathing) return;
+        breathLabel.textContent = 'Exhala';
+        breathCircle.style.transform = 'scale(1)';
+        breathTimer = setTimeout(runCycle, 8000);
+      }, 7000);
+    }, 4000);
+  }
+
+  breathBtn.addEventListener('click', ()=>{
+    breathing = !breathing;
+    if(breathing){
+      breathBtn.textContent = 'Detener';
+      runCycle();
+    } else {
+      breathBtn.textContent = 'Iniciar ejercicio';
+      clearTimeout(breathTimer);
+      breathCircle.style.transform = 'scale(1)';
+      breathLabel.textContent = 'Toca iniciar';
+    }
+  });
+
+  // ---- sleep checklist ----
+  const checkItems = document.querySelectorAll('.check-item');
+  const sleepProgress = document.getElementById('sleepProgress');
+  const sleepMsg = document.getElementById('sleep-msg');
+  let checkedCount = 0;
+
+  checkItems.forEach(item=>{
+    item.addEventListener('click', ()=>{
+      const box = item.querySelector('.box');
+      const isChecked = box.classList.toggle('checked');
+      item.classList.toggle('done', isChecked);
+      checkedCount += isChecked ? 1 : -1;
+      const pct = (checkedCount / checkItems.length) * 100;
+      sleepProgress.style.width = pct + '%';
+      if(checkedCount === 0){
+        sleepMsg.textContent = '';
+      } else if(checkedCount <= 2){
+        sleepMsg.textContent = `${checkedCount} / ${checkItems.length} — buen punto de partida, elige uno más para esta semana.`;
+      } else if(checkedCount <= 4){
+        sleepMsg.textContent = `${checkedCount} / ${checkItems.length} — vas construyendo una rutina de sueño sólida.`;
+      } else {
+        sleepMsg.textContent = `${checkedCount} / ${checkItems.length} — tienes una base de higiene del sueño muy completa.`;
+      }
+    });
+  });
+
+  // ---- reflection tool ----
+  const reflectQs = document.querySelectorAll('.reflect-q');
+  const answers = {};
+  const resultBox = document.getElementById('reflect-result');
+
+  reflectQs.forEach(q=>{
+    const id = q.getAttribute('data-q');
+    q.querySelectorAll('.opt').forEach(opt=>{
+      opt.addEventListener('click', ()=>{
+        q.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+        opt.classList.add('sel');
+        answers[id] = parseInt(opt.getAttribute('data-v'));
+        if(Object.keys(answers).length === reflectQs.length){
+          const total = Object.values(answers).reduce((a,b)=>a+b,0);
+          let msg = '';
+          if(total <= 1){
+            msg = 'Tus respuestas sugieren que, por ahora, estás manejando bien la carga del semestre. Aun así, mantener las pausas y el horario de sueño te ayuda a sostenerlo.';
+          } else if(total <= 3){
+            msg = 'Hay señales de desgaste que vale la pena atender pronto: prueba una de las estrategias de esta página esta misma semana y observa cómo te sientes.';
+          } else {
+            msg = 'Tus respuestas muestran una carga sostenida de estrés, sueño interrumpido e irritabilidad. Esto no lo tienes que resolver solo o sola — considera conversar con el servicio de bienestar estudiantil o una persona de confianza, además de aplicar las estrategias de esta página.';
+          }
+          resultBox.textContent = msg;
+          resultBox.classList.add('show');
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
